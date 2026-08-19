@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepare Script - RA Login Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .section {
+            padding: 20px;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .info-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-box label {
+            display: block;
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .info-box .value {
+            color: #333;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .status.show {
+            display: block;
+        }
+        
+        .status.waiting {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #bee5eb;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .status.processing {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeaa7;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        .status-text {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .status-log {
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .log-line {
+            margin: 3px 0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .log-line.info {
+            color: #0c5460;
+        }
+        
+        .log-line.success {
+            color: #155724;
+            background: rgba(212, 237, 218, 0.3);
+        }
+        
+        .log-line.warning {
+            color: #856404;
+            background: rgba(255, 234, 167, 0.3);
+        }
+        
+        .log-line.error {
+            color: #721c24;
+            background: rgba(248, 215, 218, 0.3);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: #e0e0e0;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0,0,0,0.2);
+            border-radius: 50%;
+            border-top-color: currentColor;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .quiz-list {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .quiz-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quiz-item:last-child {
+            border-bottom: none;
+        }
+        
+        .quiz-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .quiz-info {
+            flex: 1;
+        }
+        
+        .quiz-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .quiz-status {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Prepare Script - Teste RA</h1>
+            <p class="subtitle">Simulação de Automação com Login RA</p>
+        </div>
+        
+        <div class="content">
+            <!-- COLUNA 1: DADOS E STATUS -->
+            <div class="section">
+                <h2>📋 Informações da Sessão</h2>
+                
+                <div class="info-box">
+                    <label>🆔 Seu RA:</label>
+                    <div class="value">00001203274324</div>
+                </div>
+                
+                <div class="info-box">
+                    <label>🔐 Senha:</label>
+                    <div class="value">••••••••</div>
+                </div>
+                
+                <div class="info-box">
+                    <label>🌐 Plataforma:</label>
+                    <div class="value">preparasp.jovensgenios.com</div>
+                </div>
+                
+                <div class="info-box">
+                    <label>⏱️ Tempo de Processamento:</label>
+                    <div class="value" id="elapsed">00:00:00</div>
+                </div>
+                
+                <div class="status" id="status">
+                    <div class="status-text" id="statusText">
+                        <span class="spinner"></span>
+                        Aguardando...
+                    </div>
+                    <div class="status-log" id="statusLog"></div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" id="startBtn" onclick="iniciarAutomacao()">▶️ Iniciar Automação</button>
+                    <button class="btn-secondary" onclick="limparLogs()">🗑️ Limpar</button>
+                </div>
+            </div>
+            
+            <!-- COLUNA 2: QUIZZES -->
+            <div class="section">
+                <h2>📚 Quizzes Encontrados</h2>
+                
+                <div class="quiz-list" id="quizList">
+                    <div class="quiz-item" style="justify-content: center; padding: 30px;">
+                        <p style="color: #999;">Clique em "Iniciar" para encontrar quizzes...</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <label style="display: block; color: #666; font-weight: 600; margin-bottom: 8px;">📊 Progresso Geral</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                    <div style="text-align: center; color: #666; font-size: 12px; margin-top: 8px;">
+                        <span id="progressText">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let tempoInicio = null;
+        let elapsedInterval = null;
+        const quizzesSim = [
+            { nome: "Português - Verbos", perguntas: 5 },
+            { nome: "Matemática - Geometria", perguntas: 8 },
+            { nome: "História - República", perguntas: 6 },
+            { nome: "Ciências - Fotossíntese", perguntas: 4 },
+            { nome: "Geografia - Clima", perguntas: 7 }
+        ];
+        
+        function addLog(mensagem, tipo = 'info') {
+            const log = document.getElementById('statusLog');
+            const linha = document.createElement('div');
+            linha.className = `log-line ${tipo}`;
+            linha.textContent = `[${new Date().toLocaleTimeString()}] ${mensagem}`;
+            log.appendChild(linha);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function atualizarElapsed() {
+            if (!tempoInicio) return;
+            const diff = Math.floor((Date.now() - tempoInicio) / 1000);
+            const horas = String(Math.floor(diff / 3600)).padStart(2, '0');
+            const minutos = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+            const segundos = String(diff % 60).padStart(2, '0');
+            document.getElementById('elapsed').textContent = `${horas}:${minutos}:${segundos}`;
+        }
+        
+        function mostrarStatus(tipo, mensagem) {
+            const status = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            
+            status.classList.remove('waiting', 'success', 'processing', 'error');
+            status.classList.add(tipo, 'show');
+            
+            if (tipo === 'processing') {
+                statusText.innerHTML = `<span class="spinner"></span>${mensagem}`;
+            } else {
+                statusText.textContent = mensagem;
+            }
+        }
+        
+        function atualizarQuizzes(quizzesProcessados, total) {
+            const quizList = document.getElementById('quizList');
+            quizList.innerHTML = '';
+            
+            quizzesSim.forEach((quiz, idx) => {
+                const item = document.createElement('div');
+                item.className = 'quiz-item';
+                
+                const numero = document.createElement('div');
+                numero.className = 'quiz-number';
+                numero.textContent = idx + 1;
+                
+                const info = document.createElement('div');
+                info.className = 'quiz-info';
+                
+                const titulo = document.createElement('div');
+                titulo.className = 'quiz-title';
+                titulo.textContent = quiz.nome;
+                
+                const status = document.createElement('div');
+                status.className = 'quiz-status';
+                
+                if (idx < quizzesProcessados) {
+                    status.textContent = `✅ Concluído (${quiz.perguntas} perguntas respondidas)`;
+                    status.style.color = '#28a745';
+                } else if (idx === quizzesProcessados) {
+                    status.textContent = `⏳ Em progresso...`;
+                    status.style.color = '#ff9800';
+                } else {
+                    status.textContent = `⏹️ Aguardando...`;
+                    status.style.color = '#999';
+                }
+                
+                info.appendChild(titulo);
+                info.appendChild(status);
+                
+                item.appendChild(numero);
+                item.appendChild(info);
+                quizList.appendChild(item);
+            });
+            
+            // Atualizar progress bar
+            const progresso = Math.round((quizzesProcessados / total) * 100);
+            document.getElementById('progressBar').style.width = progresso + '%';
+            document.getElementById('progressText').textContent = progresso + '%';
+        }
+        
+        async function iniciarAutomacao() {
+            const btn = document.getElementById('startBtn');
+            btn.disabled = true;
+            
+            tempoInicio = Date.now();
+            elapsedInterval = setInterval(atualizarElapsed, 1000);
+            
+            mostrarStatus('processing', 'Conectando à plataforma...');
+            addLog('🚀 Iniciando automação', 'info');
+            addLog('🔐 Autenticando com RA: 00001203274324', 'info');
+            
+            // Simulação de etapas
+            const etapas = [
+                { tempo: 2000, msg: '✅ Login realizado com sucesso!', tipo: 'success' },
+                { tempo: 3000, msg: '📚 Acessando página de cursos...', tipo: 'info' },
+                { tempo: 4000, msg: '🔍 Encontrados 5 quizzes para fazer', tipo: 'success' },
+                { tempo: 5000, msg: '✍️ Iniciando Quiz 1: Português - Verbos (5 perguntas)', tipo: 'info' },
+                { tempo: 7000, msg: '✅ Quiz 1 concluído e enviado', tipo: 'success' },
+                { tempo: 8000, msg: '✍️ Iniciando Quiz 2: Matemática - Geometria (8 perguntas)', tipo: 'info' },
+                { tempo: 11000, msg: '✅ Quiz 2 concluído e enviado', tipo: 'success' },
+                { tempo: 12000, msg: '✍️ Iniciando Quiz 3: História - República (6 perguntas)', tipo: 'info' },
+                { tempo: 14000, msg: '✅ Quiz 3 concluído e enviado', tipo: 'success' },
+                { tempo: 15000, msg: '✍️ Iniciando Quiz 4: Ciências - Fotossíntese (4 perguntas)', tipo: 'info' },
+                { tempo: 16000, msg: '✅ Quiz 4 concluído e enviado', tipo: 'success' },
+                { tempo: 17000, msg: '✍️ Iniciando Quiz 5: Geografia - Clima (7 perguntas)', tipo: 'info' },
+                { tempo: 20000, msg: '✅ Quiz 5 concluído e enviado', tipo: 'success' },
+                { tempo: 21000, msg: '🎉 AUTOMAÇÃO CONCLUÍDA COM SUCESSO!', tipo: 'success' }
+            ];
+            
+            let quizzesAtual = 0;
+            for (const etapa of etapas) {
+                await new Promise(resolve => setTimeout(resolve, etapa.tempo - (etapas.indexOf(etapa) > 0 ? etapas[etapas.indexOf(etapa) - 1].tempo : 0)));
+                
+                addLog(etapa.msg, etapa.tipo);
+                
+                if (etapa.msg.includes('concluído e enviado')) {
+                    quizzesAtual++;
+                    atualizarQuizzes(quizzesAtual, quizzesSim.length);
+                }
+                
+                if (etapa.msg.includes('Encontrados')) {
+                    atualizarQuizzes(0, quizzesSim.length);
+                }
+            }
+            
+            mostrarStatus('success', '🎉 Automação concluída com sucesso!');
+            
+            clearInterval(elapsedInterval);
+            btn.disabled = false;
+        }
+        
+        function limparLogs() {
+            document.getElementById('statusLog').innerHTML = '';
+            document.getElementById('status').classList.remove('show');
+            document.getElementById('statusText').textContent = 'Aguardando...';
+            document.getElementById('quizList').innerHTML = `
+                <div class="quiz-item" style="justify-content: center; padding: 30px;">
+                    <p style="color: #999;">Clique em "Iniciar" para encontrar quizzes...</p>
+                </div>
+            `;
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').textContent = '0%';
+            document.getElementById('elapsed').textContent = '00:00:00';
+            tempoInicio = null;
+            if (elapsedInterval) clearInterval(elapsedInterval);
+        }
+    </script>
+</body>
+</html>
