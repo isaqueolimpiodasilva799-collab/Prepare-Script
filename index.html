@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepare Script - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+        
+        .status-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .status-box.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .status-box.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .status-box.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+        
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loader.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .info-section {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-section h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .info-section p {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Prepare Script</h1>
+        <p class="subtitle">Automação de Tarefas - Prepará SP</p>
+        
+        <div class="info-section">
+            <h3>📌 Como usar:</h3>
+            <p>
+                1. Preencha suas credenciais<br>
+                2. Adicione o ID do quiz<br>
+                3. Configure as respostas em JSON<br>
+                4. Clique em "Iniciar Automação"
+            </p>
+        </div>
+        
+        <form id="automationForm">
+            <div class="form-group">
+                <label for="username">📧 Email:</label>
+                <input type="email" id="username" placeholder="seu@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">🔐 Senha:</label>
+                <input type="password" id="password" placeholder="Sua senha" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="quizId">🎯 ID do Quiz:</label>
+                <input type="text" id="quizId" placeholder="01a019af-2d8f-776a-9292-33aea2e58986" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="answers">📝 Respostas (JSON):</label>
+                <textarea id="answers" placeholder='["Resposta 1", "Resposta 2", "Resposta 3"]' required></textarea>
+            </div>
+            
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <p>Processando... Por favor aguarde</p>
+            </div>
+            
+            <div class="status-box" id="statusBox"></div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-start">▶️ Iniciar Automação</button>
+                <button type="reset" class="btn-reset">↻ Limpar</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        const form = document.getElementById('automationForm');
+        const loader = document.getElementById('loader');
+        const statusBox = document.getElementById('statusBox');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const quizId = document.getElementById('quizId').value;
+            const answers = document.getElementById('answers').value;
+            
+            try {
+                // Validar JSON das respostas
+                const parsedAnswers = JSON.parse(answers);
+                
+                loader.classList.add('active');
+                statusBox.className = 'status-box info';
+                statusBox.innerHTML = '⏳ Iniciando automação...';
+                
+                // Simulação de envio (em produção, seria uma chamada real)
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Resposta simulada de sucesso
+                loader.classList.remove('active');
+                statusBox.className = 'status-box success';
+                statusBox.innerHTML = `
+                    ✅ <strong>Sucesso!</strong><br>
+                    Quiz: ${quizId}<br>
+                    Respostas processadas: ${parsedAnswers.length}
+                `;
+                
+                // Limpar formulário após 3 segundos
+                setTimeout(() => form.reset(), 3000);
+                
+            } catch (error) {
+                loader.classList.remove('active');
+                statusBox.className = 'status-box error';
+                statusBox.innerHTML = `❌ <strong>Erro:</strong> ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

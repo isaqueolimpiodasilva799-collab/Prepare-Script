@@ -1,0 +1,20 @@
+{
+  "platform_url": "https://preparasp.jovensgenios.com",
+  "login_url": "https://preparasp.jovensgenios.com/login",
+  "quizzes": {
+    "01a019af-2d8f-776a-9292-33aea2e58986": [
+      "Resposta 1",
+      "Resposta 2",
+      "Resposta 3",
+      "Resposta 4",
+      "Resposta 5"
+    ]
+  },
+  "settings": {
+    "timeout": 10,
+    "wait_between_answers": 1,
+    "wait_between_quizzes": 2,
+    "headless": false,
+    "log_level": "INFO"
+  }
+}
