@@ -2,12 +2,17 @@
   "platform_url": "https://preparasp.jovensgenios.com",
   "login_url": "https://preparasp.jovensgenios.com/login",
   "quizzes": {
-    "01a019af-2d8f-776a-9292-33aea2e58986": [
-      "Resposta 1",
-      "Resposta 2",
-      "Resposta 3",
-      "Resposta 4",
-      "Resposta 5"
+    "quiz_exemplo_1": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "A"
+    ],
+    "quiz_exemplo_2": [
+      "Verdadeiro",
+      "Falso",
+      "Verdadeiro"
     ]
   },
   "settings": {
@@ -15,6 +20,13 @@
     "wait_between_answers": 1,
     "wait_between_quizzes": 2,
     "headless": false,
-    "log_level": "INFO"
+    "log_level": "INFO",
+    "auto_submit": true
+  },
+  "instructions": {
+    "step_1": "Substitua 'quiz_exemplo_1' pelo ID real do seu quiz",
+    "step_2": "Atualize as respostas com as opções corretas",
+    "step_3": "Configure seu email e senha no arquivo .env",
+    "step_4": "Execute: python main.py"
   }
 }
