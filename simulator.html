@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepare Script - Teste Simulação</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            padding: 50px;
+            max-width: 1000px;
+            width: 100%;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .info-row {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .info-label {
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #333;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .quiz-list {
+            list-style: none;
+        }
+        
+        .quiz-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .quiz-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .quiz-details {
+            flex: 1;
+        }
+        
+        .quiz-name {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .quiz-info {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .badge-pending {
+            background: #e0e0e0;
+            color: #666;
+        }
+        
+        .badge-processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-start:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-start:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-reset:hover:not(:disabled) {
+            background: #e0e0e0;
+        }
+        
+        .log-section {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .log-line {
+            margin: 5px 0;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .log-time {
+            color: #888;
+        }
+        
+        .log-info {
+            color: #00ff00;
+        }
+        
+        .log-success {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        .log-warning {
+            color: #ffaa00;
+        }
+        
+        .log-error {
+            color: #ff4444;
+        }
+        
+        .progress-section {
+            margin-top: 20px;
+        }
+        
+        .progress-label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: right;
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(0,255,0,0.3);
+            border-radius: 50%;
+            border-top-color: #00ff00;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 14px;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Prepare Script - Simulação ao Vivo</h1>
+            <p>Veja como a automação funciona em tempo real</p>
+        </div>
+        
+        <div class="timer" id="timer">⏱️ 00:00:00</div>
+        
+        <div class="grid">
+            <!-- CARD 1: DADOS -->
+            <div class="card">
+                <h2>📋 Dados da Sessão</h2>
+                <div class="card-content">
+                    <div class="info-row">
+                        <div class="info-label">🆔 RA do Aluno</div>
+                        <div class="info-value">00001203274324</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">🔐 Autenticação</div>
+                        <div class="info-value">✅ Segura</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">🌐 Plataforma</div>
+                        <div class="info-value">preparasp.jovensgenios.com</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">📊 Status</div>
+                        <div class="info-value" id="statusInfo">Aguardando...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CARD 2: QUIZZES -->
+            <div class="card">
+                <h2>📚 Quizzes Encontrados</h2>
+                <div class="card-content">
+                    <ul class="quiz-list" id="quizList">
+                        <li class="quiz-item">
+                            <div class="quiz-number">1</div>
+                            <div class="quiz-details">
+                                <div class="quiz-name">Português - Verbos</div>
+                                <div class="quiz-info">5 perguntas • Aguardando</div>
+                            </div>
+                            <div class="status-badge badge-pending">⏹️ Pendente</div>
+                        </li>
+                        <li class="quiz-item">
+                            <div class="quiz-number">2</div>
+                            <div class="quiz-details">
+                                <div class="quiz-name">Matemática - Geometria</div>
+                                <div class="quiz-info">8 perguntas • Aguardando</div>
+                            </div>
+                            <div class="status-badge badge-pending">⏹️ Pendente</div>
+                        </li>
+                        <li class="quiz-item">
+                            <div class="quiz-number">3</div>
+                            <div class="quiz-details">
+                                <div class="quiz-name">História - República</div>
+                                <div class="quiz-info">6 perguntas • Aguardando</div>
+                            </div>
+                            <div class="status-badge badge-pending">⏹️ Pendente</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn-start" id="startBtn" onclick="iniciar()">▶️ Iniciar Automação</button>
+            <button class="btn-reset" onclick="resetar()">🔄 Recomeçar</button>
+        </div>
+        
+        <div class="log-section" id="logSection"></div>
+        
+        <div class="progress-section">
+            <div class="progress-label">📊 Progresso Total</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0% - Aguardando início</div>
+        </div>
+    </div>
+    
+    <script>
+        let tempoInicio = null;
+        let intervalTimer = null;
+        let timerCorrendo = false;
+        
+        const logs = [];
+        
+        function addLog(msg, tipo = 'info') {
+            const logSection = document.getElementById('logSection');
+            const linha = document.createElement('div');
+            linha.className = `log-line log-${tipo}`;
+            
+            const hora = new Date().toLocaleTimeString();
+            const emoji = {
+                'info': 'ℹ️',
+                'success': '✅',
+                'warning': '⚠️',
+                'error': '❌',
+                'processing': '⏳'
+            }[tipo] || '•';
+            
+            linha.innerHTML = `<span class="log-time">[${hora}]</span> ${emoji} ${msg}`;
+            logSection.appendChild(linha);
+            logSection.scrollTop = logSection.scrollHeight;
+            
+            logs.push({ msg, tipo, hora });
+        }
+        
+        function atualizarTimer() {
+            if (!tempoInicio) return;
+            const diff = Math.floor((Date.now() - tempoInicio) / 1000);
+            const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+            const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+            const s = String(diff % 60).padStart(2, '0');
+            document.getElementById('timer').textContent = `⏱️ ${h}:${m}:${s}`;
+        }
+        
+        function atualizarProgresso(quizzesCompletos, total) {
+            const progresso = Math.round((quizzesCompletos / total) * 100);
+            document.getElementById('progressBar').style.width = progresso + '%';
+            document.getElementById('progressText').textContent = `${progresso}% - ${quizzesCompletos} de ${total} quizzes completos`;
+        }
+        
+        async function iniciar() {
+            const btn = document.getElementById('startBtn');
+            btn.disabled = true;
+            
+            tempoInicio = Date.now();
+            document.getElementById('logSection').innerHTML = '';
+            logs.length = 0;
+            
+            intervalTimer = setInterval(atualizarTimer, 1000);
+            timerCorrendo = true;
+            
+            addLog('🚀 Prepare Script - Automação Iniciada', 'success');
+            addLog('🔐 Conectando ao servidor preparasp.jovensgenios.com', 'processing');
+            
+            await esperar(2000);
+            addLog('✅ Conexão estabelecida com sucesso', 'success');
+            
+            addLog('📝 Autenticando com RA: 00001203274324', 'processing');
+            await esperar(2000);
+            addLog('✅ Login realizado com sucesso! Bem-vindo!', 'success');
+            
+            addLog('📚 Acessando página de cursos...', 'processing');
+            await esperar(1500);
+            addLog('✅ Página de cursos carregada', 'success');
+            
+            addLog('🔍 Procurando por quizzes disponíveis...', 'processing');
+            await esperar(2000);
+            addLog('✅ Encontrados 3 quizzes para fazer', 'success');
+            
+            // Quiz 1
+            await fazerQuiz(1, 'Português - Verbos', 5);
+            
+            // Quiz 2
+            await fazerQuiz(2, 'Matemática - Geometria', 8);
+            
+            // Quiz 3
+            await fazerQuiz(3, 'História - República', 6);
+            
+            addLog('🎉 Todos os quizzes foram concluídos!', 'success');
+            addLog('📊 Resumo: 19 perguntas respondidas, 3 quizzes enviados', 'success');
+            
+            document.getElementById('statusInfo').textContent = '✅ Concluído';
+            document.getElementById('statusInfo').style.color = '#28a745';
+            
+            atualizarProgresso(3, 3);
+            
+            clearInterval(intervalTimer);
+            timerCorrendo = false;
+            btn.disabled = false;
+        }
+        
+        async function fazerQuiz(numero, nome, perguntas) {
+            addLog(`\n✍️ Iniciando Quiz ${numero}: ${nome} (${perguntas} perguntas)`, 'processing');
+            await esperar(1500);
+            
+            for (let i = 1; i <= perguntas; i++) {
+                addLog(`   → Respondendo pergunta ${i}/${perguntas}...`, 'info');
+                await esperar(300);
+            }
+            
+            addLog(`🚀 Enviando respostas do Quiz ${numero}...`, 'processing');
+            await esperar(1000);
+            
+            addLog(`✅ Quiz ${numero} concluído e enviado com sucesso!`, 'success');
+            atualizarProgresso(numero, 3);
+            atualizarQuizStatus(numero);
+            
+            await esperar(1000);
+        }
+        
+        function atualizarQuizStatus(numero) {
+            const quizzes = document.querySelectorAll('.quiz-item');
+            if (quizzes[numero - 1]) {
+                const badge = quizzes[numero - 1].querySelector('.status-badge');
+                badge.className = 'status-badge badge-success';
+                badge.textContent = '✅ Concluído';
+            }
+        }
+        
+        function esperar(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        function resetar() {
+            clearInterval(intervalTimer);
+            timerCorrendo = false;
+            tempoInicio = null;
+            
+            document.getElementById('logSection').innerHTML = '';
+            document.getElementById('timer').textContent = '⏱️ 00:00:00';
+            document.getElementById('statusInfo').textContent = 'Aguardando...';
+            document.getElementById('statusInfo').style.color = '#666';
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').textContent = '0% - Aguardando início';
+            
+            document.querySelectorAll('.quiz-item').forEach((item, idx) => {
+                const badge = item.querySelector('.status-badge');
+                badge.className = 'status-badge badge-pending';
+                badge.textContent = '⏹️ Pendente';
+            });
+            
+            document.getElementById('startBtn').disabled = false;
+        }
+    </script>
+</body>
+</html>
